@@ -2,7 +2,7 @@
 // 2020 - 2- 9
 // https://paiza.jp/challenges/199/show
 
-//#define DEBUG
+#define DEBUG
 //#define ThiefTest
 
 using System;
@@ -58,8 +58,7 @@ public class Thief {
     }
     
     public void PrintStatus() {
-        Console.WriteLine(this.X.ToString() + ", " + this.Y.ToString() + ", " + this.Dir.ToString());
-        Console.WriteLine();
+        Console.WriteLine($"{this.X + 1}, {this.Y + 1}, {this.Dir}");
     }
 }
 
@@ -74,10 +73,6 @@ public static class MainRoutine {
             }
             Console.WriteLine();
         }
-        
-        #if DEBUG
-        Console.WriteLine();
-        #endif
     }
     
     public static void UpdateThiefPosition(Thief thief, char[,] town, bool isOld) {
@@ -139,20 +134,28 @@ public static class MainRoutine {
         PrintTown(town);
         town[thief.X, thief.Y] = tempChar;
         thief.PrintStatus();
+        Console.WriteLine();
         #endif
         
         while(IsInTown(thief, town)) {
             
             #if DEBUG
+            var str = default(string);
             if (town[thief.X, thief.Y] == 'O') {
                 town[thief.X, thief.Y] = 'F';
                 thief.TurnRight();
+                
+                str = "0 -> F";
             } else {
                 town[thief.X, thief.Y] = 'O';
                 thief.TurnLeft();
+                
+                str = "F -> O";
             }
             PrintTown(town);
             thief.PrintStatus();
+            Console.WriteLine(str);
+            Console.WriteLine();
             
             #else
             if (town[thief.X, thief.Y] == '.') {
