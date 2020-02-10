@@ -1,8 +1,3 @@
-// うさぎジャンプ
-// 2020-2-10
-// paiza skill check rank B
-// https://paiza.jp/challenges/96/show
-
 //#define DEBUG
 
 using System;
@@ -10,15 +5,21 @@ using System.Collections.Generic;
 
 public class JumpingRabits{
     
-    public static int GetJumpedPosition(int current, bool[] bushes) {
+    public static int Jump(int current, bool[] bushes) {
+        bushes[current] = false;
         var newPosition = 0;
         var length = bushes.Length;
         for(var i=1; i <= length; i++) {
-            newPosition = (current + length - i) % length;
+            newPosition = (current + i) % length;
             if(!bushes[newPosition]) {
+                bushes[newPosition] = true;
+                #if DEBUG
+                Console.Write($"({current} to {newPosition}) ");
+                #endif
                 break;
             }
         }
+        
         return newPosition;
     }
     
@@ -27,9 +28,8 @@ public class JumpingRabits{
         var numBushes = int.Parse(initInput[0]);
         var numRabits = int.Parse(initInput[1]);
         var jumpTimes = int.Parse(initInput[2]);
-        
-        var rabits = new int[numRabits];
         var bushes = new bool[numBushes];
+        var rabits = new int[numRabits];
         
         for(var i=0; i < numRabits; i++) {
             rabits[i] = int.Parse(Console.ReadLine().Trim()) - 1;
@@ -37,33 +37,26 @@ public class JumpingRabits{
         }
         
         #if DEBUG
-        for(var i=0; i < numRabits; i++) {
-            Console.WriteLine(rabits[i] + 1);
-        }
-        Console.Write("Rabit Jump! ");
-        #endif
-        
-        var count = 0;
-        while(count < jumpTimes) {
-            for(var i=0; i < numRabits; i++) {
-                bushes[rabits[i]] = false;
-                var p = GetJumpedPosition(rabits[i], bushes);
-                #if DEBUG
-                Console.Write($"({rabits[i]} to {p}) ");
-                
-                #endif
-                
-                bushes[p] = true;
-                rabits[i] = p;
-                count ++;
-                if(count >= jumpTimes) {
-                    break;
-                }
+        for(var i=0; i < numBushes; i++) {
+            if(bushes[i]) {
+                Console.WriteLine(i + 1);
             }
         }
-        #if DEBUG
-        Console.WriteLine();
         #endif
+        
+        for(var i=0; i < jumpTimes; i++) {
+            #if DEBUG
+            Console.Write("Rabit Jump! ");
+            #endif
+            
+            for(var j=0; j < numRabits; j++) {
+                rabits[j] = Jump(rabits[j], bushes);
+            }
+            
+            #if DEBUG
+            Console.WriteLine();
+            #endif
+        }
         
         for(var i=0; i < numRabits; i++) {
             Console.WriteLine(rabits[i] + 1);
